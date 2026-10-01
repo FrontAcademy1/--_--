@@ -1,0 +1,22 @@
+<!doctype html><html lang="ar" dir="rtl"><head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>SPRIX Automation</title><link rel="stylesheet" href="/static/style.css"></head>
+<body><main>
+<h1>SPRIX Automation</h1>
+<p>أتمتة لحساب الطالب. لا يتم تسجيل كلمة المرور في الـlogs.</p>
+<form id="login">
+<label>Student ID / Code</label><input name="student_id" required>
+<label>Password</label><input name="password" type="password" required autocomplete="off">
+<button>بدء تسجيل الدخول</button>
+</form>
+<div class="actions"><button onclick="runOnce()">حل وإرسال السؤال الحالي</button><button onclick="stopBot()">إيقاف</button></div>
+<pre id="out">جاهز.</pre>
+<script>
+const out=document.getElementById('out');
+document.getElementById('login').onsubmit=async e=>{
+ e.preventDefault(); out.textContent='جاري فتح SPRIX وتسجيل الدخول...';
+ const r=await fetch('/start',{method:'POST',body:new FormData(e.target)}); out.textContent=JSON.stringify(await r.json(),null,2);
+};
+async function runOnce(){out.textContent='جاري قراءة السؤال والحل...'; const r=await fetch('/run',{method:'POST'}); out.textContent=JSON.stringify(await r.json(),null,2);}
+async function stopBot(){const r=await fetch('/stop',{method:'POST'});out.textContent=JSON.stringify(await r.json(),null,2);}
+</script></main></body></html>
